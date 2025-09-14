@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Feedback - Magodo Specialist Hospital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '🏥 ❤️ 😊 💚 🌟 ✨ 💫 🎉';
+            position: fixed;
+            top: -50px;
+            left: -100%;
+            font-size: 28px;
+            animation: float 30s linear infinite;
+            opacity: 0.1;
+            z-index: 0;
+            white-space: nowrap;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(0) rotate(0deg); }
+            100% { transform: translateX(200vw) rotate(360deg); }
+        }
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 20px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 
+                0 25px 80px rgba(255, 255, 255, 0.4),
+                0 15px 40px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            animation: containerEntry 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes containerEntry {
+            0% { opacity: 0; transform: translateY(80px) scale(0.8) rotate(-5deg); }
+            60% { opacity: 0.8; transform: translateY(-10px) scale(1.02) rotate(2deg); }
+            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+        }
+
+        .hospital-header {
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .hospital-icon {
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.15),
+                0 0 0 12px rgba(102, 126, 234, 0.1);
+            animation: hospitalIconFloat 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        .hospital-icon::after {
+            content: '✨';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 20px;
+            animation: sparkle 2s infinite;
+        }
+
+        @keyframes hospitalIconFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.6; transform: scale(1.3) rotate(180deg); }
+        }
+
+        .hospital-header h1 {
+            color: #4c63d2;
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .hospital-header p {
+            color: #667eea;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .language-selector {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .language-label {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .language-dropdown {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 130px;
+            transition: all 0.3s ease;
+        }
+
+        .language-dropdown:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .language-dropdown option {
+            background: #667eea;
+            color: white;
+        }
+
+        .translation-status {
+            background: rgba(152, 251, 152, 0.15);
+            border: 2px solid rgba(152, 251, 152, 0.4);
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #27ae60;
+            font-weight: 700;
+            display: none;
+        }
+
+        .translation-status.show {
+            display: block;
+        }
+
+        .translation-status.translating {
+            background: rgba(255, 193, 7, 0.15);
+            border-color: rgba(255, 193, 7, 0.4);
+            color: #856404;
+        }
+
+        .impact-stats {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            border-radius: 20px;
+            padding: 18px 22px;
+            margin-bottom: 18px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impact-number {
+            font-size: 28px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .impact-text {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        .community-stats {
+            background: rgba(102, 126, 234, 0.12);
+            border: 2px solid rgba(102, 126, 234, 0.25);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .community-number {
+            font-size: 24px;
+            font-weight: 900;
+            color: #667eea;
+            margin-bottom: 6px;
+        }
+
+        .community-text {
+            color: #4c63d2;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .sentiment-card {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            border-radius: 18px;
+            padding: 16px;
+            color: white;
+            margin-bottom: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sentiment-card::before {
+            content: '📈';
+            position: absolute;
+            top: 10px;
+            right: 16px;
+            font-size: 24px;
+            opacity: 0.4;
+        }
+
+        .sentiment-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            opacity: 0.95;
+        }
+
+        .sentiment-value {
+            font-size: 20px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .examples-section {
+            margin-bottom: 20px;
+        }
+
+        .examples-title {
+            color: #4c63d2;
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .example-carousel {
+            position: relative;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            min-height: 90px;
+            overflow: hidden;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .example-item {
+            display: none;
+        }
+
+        .example-item.active {
+            display: block;
+        }
+
+        .example-text {
+            color: #2d3436;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .example-date {
+            color: #667eea;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.3);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .carousel-dot.active {
+            background: #667eea;
+            transform: scale(1.4);
+        }
+
+        .question-section {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .question-title {
+            color: #4c63d2;
+            margin-bottom: 18px;
+            font-size: 18px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .rating-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .rating-option {
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px;
+            min-height: 65px;
+        }
+
+        .rating-option:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+
+        .rating-option.selected {
+            border-color: #667eea;
+            border-width: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .rating-emoji {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .rating-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+        }
+
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .input-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            padding: 4px;
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .input-container.focused {
+            border-color: #667eea;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 16px;
+            background: transparent;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .text-input:focus {
+            outline: none;
+        }
+
+        .text-input::placeholder {
+            color: rgba(102, 126, 234, 0.6);
+        }
+
+        .voice-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 0 0 14px 14px;
+            margin-top: 4px;
+        }
+
+        .voice-button {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 20px rgba(253, 121, 168, 0.3);
+        }
+
+        .voice-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(253, 121, 168, 0.4);
+        }
+
+        .voice-status {
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .ai-analysis-indicator {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 600;
+            display: none;
+        }
+
+        .ai-analysis-indicator.show {
+            display: block;
+        }
+
+        .ai-analysis-indicator::before {
+            content: '🤖';
+            margin-right: 8px;
+        }
+
+        .optional-inputs {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .simple-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .simple-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .simple-input::placeholder {
+            color: rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 35px rgba(102, 126, 234, 0.4);
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:disabled {
+            background: linear-gradient(135deg, #ddd 0%, #ccc 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .registration-link {
+            text-align: center;
+            margin-top: 32px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 20px;
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+        }
+
+        .registration-text {
+            color: #667eea;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .registration-btn {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .registration-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(253, 121, 168, 0.3);
+        }
+
+        .registration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .registration-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .registration-card {
+            width: 95%;
+            max-width: 500px;
+            max-height: 85vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            box-shadow: 0 25px 80px rgba(255, 255, 255, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow-y: auto;
+            z-index: 1001;
+            transform: translateY(100vh);
+            opacity: 0;
+        }
+
+        .registration-card.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .registration-card-header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 24px 10px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 32px 32px 0 0;
+        }
+
+        .registration-title {
+            color: #667eea;
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .close-registration {
+            background: rgba(102, 126, 234, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .close-registration:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .registration-content {
+            padding: 20px 24px 40px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4c63d2;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .required::after {
+            content: '*';
+            color: #fd79a8;
+            margin-left: 4px;
+            font-weight: 800;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 16px 18px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: rgba(102, 126, 234, 0.6);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%23667eea"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 18px;
+            cursor: pointer;
+            padding-right: 50px;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin: 20px 0;
+            padding: 18px;
+            border-radius: 18px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-group:hover {
+            background: rgba(102, 126, 234, 0.05);
+            border-color: rgba(102, 126, 234, 0.15);
+        }
+
+        .custom-checkbox {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .custom-checkbox.checked {
+            background: #667eea;
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .custom-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .checkbox-label {
+            color: #4c63d2;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.5;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .payment-info {
+            background: rgba(102, 126, 234, 0.08);
+            border: 3px solid rgba(102, 126, 234, 0.15);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 16px 0;
+            display: none;
+        }
+
+        .payment-info.show {
+            display: block;
+        }
+
+        .payment-info h4 {
+            color: #667eea;
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .payment-info h4::before {
+            content: '💳';
+        }
+
+        .payment-info p {
+            color: #4c63d2;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .price-highlight {
+            color: #667eea;
+            font-weight: 800;
+            background: rgba(102, 126, 234, 0.15);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 16px;
+            display: inline-block;
+            margin: 0 4px;
+        }
+
+        .thank-you, .registration-success {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 50px rgba(0, 184, 148, 0.4);
+        }
+
+        .success-icon::after {
+            content: '🎉';
+            font-size: 40px;
+        }
+
+        .thank-you h2, .registration-success h2 {
+            color: #00b894;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .thank-you p, .registration-success p {
+            color: #667eea;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.7;
+        }
+
+        .registration-success {
+            padding: 40px 24px;
+        }
+
+        .registration-success h2 {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .registration-success .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .registration-success .success-icon::after {
+            content: '🎉';
+            font-size: 32px;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 4px; }
+            .main-container { 
+                padding: 16px; 
+                max-width: calc(100vw - 8px);
+            }
+            .hospital-icon { width: 70px; height: 70px; }
+            .hospital-header h1 { font-size: 20px; }
+            .rating-grid { gap: 6px; }
+            .rating-option { 
+                min-height: 60px; 
+                padding: 6px 3px;
+            }
+            .rating-emoji { font-size: 20px; }
+            .rating-label { font-size: 9px; }
+            .text-input { padding: 14px 16px; min-height: 100px; }
+            .voice-button { width: 40px; height: 40px; font-size: 16px; }
+            .registration-card {
+                width: 100%;
+                max-height: 90vh;
+                border-radius: 20px;
+            }
+            .registration-card-header {
+                padding: 16px 20px 8px;
+                border-radius: 20px 20px 0 0;
+            }
+            .registration-title {
+                font-size: 20px;
+            }
+            .registration-content {
+                padding: 16px 20px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Hospital Header -->
+        <div class="hospital-header">
+            <div class="hospital-icon">🏥</div>
+            <h1 id="hospital-name">Magodo Specialist Hospital</h1>
+            <p id="hospital-tagline">You are amazing!</p>
+        </div>
+
+        <!-- Language Selector -->
+        <div class="language-selector">
+            <div class="language-label">
+                <span>🌍</span>
+                <span id="select-language">Select Language:</span>
+            </div>
+            <select class="language-dropdown" id="languageSelect">
+                <option value="en">English</option>
+                <option value="ha">Hausa</option>
+                <option value="yo">Yoruba</option>
+                <option value="ig">Igbo</option>
+                <option value="fr">French</option>
+                <option value="ar">Arabic</option>
+            </select>
+        </div>
+
+        <!-- Translation Status -->
+        <div class="translation-status" id="translationStatus">
+            <span id="ready-translate">Ready to translate</span>
+        </div>
+
+        <!-- Impact Stats -->
+        <div class="impact-stats">
+            <div class="impact-number">
+                <span>🎯</span>
+                <span id="impactNumber">47</span>
+                <span id="improvements-text">improvements</span>
+            </div>
+            <div class="impact-text" id="impact-description">made from patient feedback this year</div>
+        </div>
+
+        <!-- Community Stats -->
+        <div class="community-stats">
+            <div class="community-number" id="communityNumber">1,247</div>
+            <div class="community-text" id="community-description">patients helping improve healthcare at MSH</div>
+        </div>
+
+        <!-- Sentiment Trend -->
+        <div class="sentiment-card">
+            <div class="sentiment-title" id="sentiment-title">Patient Satisfaction Trend</div>
+            <div class="sentiment-value">
+                <span>⬆️</span>
+                <span>+12%</span>
+                <span id="this-quarter">this quarter</span>
+            </div>
+        </div>
+
+        <!-- Examples Carousel -->
+        <div class="examples-section">
+            <div class="examples-title" id="recent-changes">Recent Changes You Inspired</div>
+            <div class="example-carousel">
+                <div class="example-item active">
+                    <div class="example-text" id="example1">"Your suggestion about waiting room seating led to new comfortable chairs being installed!"</div>
+                    <div class="example-date" id="example1-date">Implemented: March 2024</div>
+                </div>
+                <div class="example-item">
+                    <div class="example-text" id="example2">"Patient feedback about appointment reminders helped us launch our new SMS notification system."</div>
+                    <div class="example-date" id="example2-date">Implemented: February 2024</div>
+                </div>
+                <div class="example-item">
+                    <div class="example-text" id="example3">"Your comments about parking led to our new valet service on busy days."</div>
+                    <div class="example-date" id="example3-date">Implemented: January 2024</div>
+                </div>
+            </div>
+            <div class="carousel-dots">
+                <div class="carousel-dot active" onclick="showExample(0)"></div>
+                <div class="carousel-dot" onclick="showExample(1)"></div>
+                <div class="carousel-dot" onclick="showExample(2)"></div>
+            </div>
+        </div>
+
+        <!-- Feedback Form -->
+        <div class="feedback-section" id="feedbackSection">
+            <!-- Satisfaction Rating -->
+            <div class="question-section">
+                <h3 class="question-title" id="satisfaction-question">How satisfied are you with our care?</h3>
+                <div class="rating-grid" id="satisfactionRating">
+                    <button type="button" class="rating-option" data-value="1" onclick="selectRating('satisfaction', 1, this)">
+                        <span class="rating-emoji">😞</span>
+                        <span class="rating-label" id="very-poor">Very Poor</span>
+                    </button>
+                    <button type="button" class="rating-option" data-value="2" onclick="selectRating('satisfaction', 2, this)">
+                        <span class="rating-emoji">😕</span>
+                        <span class="rating-label" id="poor">Poor</span>
+                    </button>
+                    <button type="button" class="rating-option" data-value="3" onclick="selectRating('satisfaction', 3, this)">
+                        <span class="rating-emoji">😐</span>
+                        <span class="rating-label" id="fair">Fair</span>
+                    </button>
+                    <button type="button" class="rating-option" data-value="4" onclick="selectRating('satisfaction', 4, this)">
+                        <span class="rating-emoji">😊</span>
+                        <span class="rating-label" id="good">Good</span>
+                    </button>
+                    <button type="button" class="rating-option" data-value="5" onclick="selectRating('satisfaction', 5, this)">
+                        <span class="rating-emoji">🤩</span>
+                        <span class="rating-label" id="excellent">Excellent</span>
+                    </button>
+                </div>
+                <div class="rating-scale">
+                    <span id="not-satisfied">Not satisfied</span>
+                    <span id="very-satisfied">Very satisfied</span>
+                </div>
+            </div>
+
+            <!-- Recommendation Rating -->
+            <div class="question-section">
+                <h3 class="question-title" id="recommend-question">Would you recommend us?</h3>
+                <div class="rating-grid" id="recommendRating">
+                    <button type="button" class="rating-option" data-value="1" onclick="selectRating('recommendation', 1, this)">
+                        <span class="rating-emoji">👎</span>
+                        <span class="rating-label" id="never">Never</span>
+                    </button>
+                    <button type="button" class="rating-option" data-value="2" onclick="selectRating('recommendation', 2, this)">
+                        <span class="rating-emoji">🤷</span>
+                        <span class="rating-label" id="unlikely">Unlikely</span>
+                    </button>
+                    <button type="button" class="rating-option" data-value="3" onclick="selectRating('recommendation', 3, this)">
+                        <span class="rating-emoji">🤔</span>
+                        <span class="rating-label" id="maybe">Maybe</span>
+                    </button>
+                    <button type="button" class="rating-option" data-value="4" onclick="selectRating('recommendation', 4, this)">
+                        <span class="rating-emoji">👍</span>
+                        <span class="rating-label" id="likely">Likely</span>
+                    </button>
+                    <button type="button" class="rating-option" data-value="5" onclick="selectRating('recommendation', 5, this)">
+                        <span class="rating-emoji">💯</span>
+                        <span class="rating-label" id="definitely">Definitely</span>
+                    </button>
+                </div>
+                <div class="rating-scale">
+                    <span id="would-not-recommend">Would not recommend</span>
+                    <span id="highly-recommend">Highly recommend</span>
+                </div>
+            </div>
+
+            <!-- Experience Input -->
+            <div class="input-container" id="inputContainer">
+                <textarea 
+                    class="text-input" 
+                    id="experienceText" 
+                    placeholder="Tell us about your visit - we love hearing from you! Share what made you smile or how we can improve..."
+                    oninput="handleTextInput()"
+                    onfocus="document.getElementById('inputContainer').classList.add('focused')"
+                    onblur="document.getElementById('inputContainer').classList.remove('focused')"></textarea>
+                <div class="voice-controls">
+                    <div class="voice-status" id="voice-instruction">Click microphone to speak in your language</div>
+                    <button class="voice-button" onclick="toggleVoice()">🎤</button>
+                </div>
+            </div>
+            <div class="ai-analysis-indicator" id="aiAnalysis">
+                AI is analyzing your feedback sentiment...
+            </div>
+
+            <!-- Optional Inputs -->
+            <div class="optional-inputs">
+                <input type="text" class="simple-input" id="patientName" placeholder="Your Name (Optional)">
+                <input type="text" class="simple-input" id="patientContact" placeholder="Email or Phone (Optional)">
+            </div>
+
+            <button type="button" class="submit-btn" id="submitBtn" onclick="submitFeedback()" disabled>
+                Send Feedback 🚀
+            </button>
+        </div>
+
+        <!-- Thank You Screen -->
+        <div class="thank-you" id="thankYou">
+            <div class="success-icon"></div>
+            <h2 id="thank-you-title">Amazing! Thank You!</h2>
+            <p id="thank-you-message">Your feedback means the world to us! We're constantly working to make your healthcare experience even better. You rock!</p>
+        </div>
+
+        <!-- Registration Link -->
+        <div class="registration-link" id="registrationLink">
+            <div class="registration-text" id="join-community">💫 Be part of our healthcare community!</div>
+            <button class="registration-btn" onclick="showRegistration()">
+                <span id="register-now">Register Now ✨</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Registration Overlay -->
+    <div class="registration-overlay" id="registrationOverlay" onclick="closeIfClickedOutside(event)">
+        <div class="registration-card" id="registrationCard">
+            <div class="registration-card-header">
+                <h3 class="registration-title" id="registration-title">Join Our Community</h3>
+                <button class="close-registration" onclick="hideRegistration()">×</button>
+            </div>
+            
+            <div class="registration-content">
+                <form id="registrationForm" onsubmit="handleRegistration(event)">
+                    <div class="form-group">
+                        <label class="form-label required" id="last-name-label">Last Name</label>
+                        <input type="text" class="form-input" id="lastName" required placeholder="Your family name" oninput="validateRegistrationForm()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required" id="first-name-label">First Name</label>
+                        <input type="text" class="form-input" id="firstName" required placeholder="Your first name" oninput="validateRegistrationForm()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" id="middle-name-label">Middle Name</label>
+                        <input type="text" class="form-input" id="middleName" placeholder="Your middle name (optional)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required" id="marital-status-label">Marital Status</label>
+                        <select class="form-select" id="maritalStatus" required onchange="validateRegistrationForm()">
+                            <option value="">Select marital status</option>
+                            <option value="divorced">Divorced</option>
+                            <option value="married">Married</option>
+                            <option value="separated">Separated</option>
+                            <option value="single">Single</option>
+                            <option value="widowed">Widowed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required" id="phone-label">Phone Number</label>
+                        <input type="tel" class="form-input" id="phone" required placeholder="e.g. +234 801 234 5678" oninput="formatPhone(); validateRegistrationForm()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" id="email-label">Email Address</label>
+                        <input type="email" class="form-input" id="email" placeholder="your.email@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required" id="dob-label">Date of Birth</label>
+                        <input type="date" class="form-input" id="dateOfBirth" required onchange="validateRegistrationForm()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required" id="gender-label">Gender</label>
+                        <select class="form-select" id="gender" required onchange="validateRegistrationForm()">
+                            <option value="">Select gender</option>
+                            <option value="female">Female</option>
+                            <option value="male">Male</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required" id="payor-label">Payor Type</label>
+                        <select class="form-select" id="payor" required onchange="handlePayorChange(); validateRegistrationForm()">
+                            <option value="">Select payor type</option>
+                            <option value="personal">Personal - ₦7,500</option>
+                            <option value="family">Family - ₦15,000</option>
+                            <option value="aiico">AIICO</option>
+                            <option value="anchor">Anchor</option>
+                            <option value="axamansard">Axamansard</option>
+                            <option value="bastion">Bastion</option>
+                            <option value="clearline">Clearline</option>
+                            <option value="hygeia">Hygeia</option>
+                            <option value="leadway">Leadway</option>
+                            <option value="nem">NEM</option>
+                            <option value="phillips">Phillips</option>
+                            <option value="reliance">Reliance</option>
+                            <option value="tht">THT</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" id="hmo-id-label">HMO ID Number</label>
+                        <input type="text" class="form-input" id="hmoId" placeholder="Enter your HMO ID" disabled oninput="validateRegistrationForm()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label required" id="address-label">Your Address</label>
+                        <textarea class="form-textarea" id="address" required placeholder="Enter your full address..." rows="2" oninput="validateRegistrationForm()"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" id="comments-label">Additional Comments (Optional)</label>
+                        <textarea class="form-textarea" id="comments" placeholder="Any additional information or concerns..." rows="3" oninput="analyzeRegistrationText()"></textarea>
+                        <div class="ai-analysis-indicator" id="registrationAiAnalysis">
+                            AI is analyzing your feedback sentiment...
+                        </div>
+                    </div>
+
+                    <div class="payment-info" id="paymentInfo">
+                        <h4 id="payment-details-title">Payment Details</h4>
+                        <p id="paymentText">Please make payment to complete your registration.</p>
+                    </div>
+
+                    <div class="checkbox-group" onclick="toggleConsent()">
+                        <div class="custom-checkbox" id="consentCheckbox"></div>
+                        <label class="checkbox-label" id="consent-label">
+                            I consent to the processing of my personal information for medical purposes and agree to the hospital's privacy policy.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="registerBtn" disabled>
+                        <span id="complete-registration">Complete Registration</span> 🎯
+                    </button>
+                </form>
+
+                <!-- Registration Success -->
+                <div class="registration-success" id="registrationSuccess">
+                    <div class="success-icon"></div>
+                    <h2 id="welcome-title">Welcome to the Family! 🎉</h2>
+                    <p id="welcome-message">Your registration is complete! We're excited to be part of your health journey.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let satisfactionRating = null;
+        let recommendRating = null;
+        let consentGiven = false;
+        let currentExampleIndex = 0;
+        let currentLanguage = 'en';
+
+        // Complete Translation System
+        const translations = {
+            en: {
+                // Hospital info
+                'hospital-name': 'Magodo Specialist Hospital',
+                'hospital-tagline': 'You are amazing!',
+                
+                // Language selector
+                'select-language': 'Select Language:',
+                'ready-translate': 'Ready to translate',
+                
+                // Stats
+                'improvements-text': 'improvements',
+                'impact-description': 'made from patient feedback this year',
+                'community-description': 'patients helping improve healthcare at MSH',
+                'sentiment-title': 'Patient Satisfaction Trend',
+                'this-quarter': 'this quarter',
+                
+                // Examples
+                'recent-changes': 'Recent Changes You Inspired',
+                'example1': '"Your suggestion about waiting room seating led to new comfortable chairs being installed!"',
+                'example1-date': 'Implemented: March 2024',
+                'example2': '"Patient feedback about appointment reminders helped us launch our new SMS notification system."',
+                'example2-date': 'Implemented: February 2024',
+                'example3': '"Your comments about parking led to our new valet service on busy days."',
+                'example3-date': 'Implemented: January 2024',
+                
+                // Feedback form
+                'satisfaction-question': 'How satisfied are you with our care?',
+                'very-poor': 'Very Poor', 
+                'poor': 'Poor', 
+                'fair': 'Fair', 
+                'good': 'Good', 
+                'excellent': 'Excellent',
+                'not-satisfied': 'Not satisfied',
+                'very-satisfied': 'Very satisfied',
+                
+                'recommend-question': 'Would you recommend us?',
+                'never': 'Never', 
+                'unlikely': 'Unlikely', 
+                'maybe': 'Maybe', 
+                'likely': 'Likely', 
+                'definitely': 'Definitely',
+                'would-not-recommend': 'Would not recommend',
+                'highly-recommend': 'Highly recommend',
+                
+                'experience-placeholder': 'Tell us about your visit - we love hearing from you! Share what made you smile or how we can improve...',
+                'voice-instruction': 'Click microphone to speak in your language',
+                'ai-analyzing': 'AI is analyzing your feedback sentiment...',
+                'name-placeholder': 'Your Name (Optional)',
+                'contact-placeholder': 'Email or Phone (Optional)',
+                'submit-feedback': 'Send Feedback 🚀',
+                
+                // Thank you screen
+                'thank-you-title': 'Amazing! Thank You!',
+                'thank-you-message': 'Your feedback means the world to us! We\'re constantly working to make your healthcare experience even better. You rock!',
+                
+                // Registration
+                'join-community': '💫 Be part of our healthcare community!',
+                'register-now': 'Register Now ✨',
+                'registration-title': 'Join Our Community',
+                
+                // Registration form
+                'last-name-label': 'Last Name',
+                'last-name-placeholder': 'Your family name',
+                'first-name-label': 'First Name',
+                'first-name-placeholder': 'Your first name',
+                'middle-name-label': 'Middle Name',
+                'middle-name-placeholder': 'Your middle name (optional)',
+                'marital-status-label': 'Marital Status',
+                'marital-status-placeholder': 'Select marital status',
+                'phone-label': 'Phone Number',
+                'phone-placeholder': 'e.g. +234 801 234 5678',
+                'email-label': 'Email Address',
+                'email-placeholder': 'your.email@example.com',
+                'dob-label': 'Date of Birth',
+                'gender-label': 'Gender',
+                'gender-placeholder': 'Select gender',
+                'payor-label': 'Payor Type',
+                'payor-placeholder': 'Select payor type',
+                'hmo-id-label': 'HMO ID Number',
+                'hmo-id-placeholder': 'Enter your HMO ID',
+                'address-label': 'Your Address',
+                'address-placeholder': 'Enter your full address...',
+                'comments-label': 'Additional Comments (Optional)',
+                'comments-placeholder': 'Any additional information or concerns...',
+                'payment-details-title': 'Payment Details',
+                'payment-text': 'Please make payment to complete your registration.',
+                'personal-payment-text': 'Please pay <span class="price-highlight">₦7,500</span> to complete your personal plan registration.',
+                'family-payment-text': 'Please pay <span class="price-highlight">₦15,000</span> to complete your family plan registration.',
+                'consent-label': 'I consent to the processing of my personal information for medical purposes and agree to the hospital\'s privacy policy.',
+                'complete-registration': 'Complete Registration',
+                
+                // Registration success
+                'welcome-title': 'Welcome to the Family! 🎉',
+                'welcome-message': 'Your registration is complete! We\'re excited to be part of your health journey.'
+            },
+            ha: {
+                // Hospital info
+                'hospital-name': 'Asibitin Magodo Mai Hankali',
+                'hospital-tagline': 'Kai/Ke mai girma ne/ce!',
+                
+                // Language selector
+                'select-language': 'Zaɓi Harshe:',
+                'ready-translate': 'Shirye don fassara',
+                
+                // Stats
+                'improvements-text': 'ingantuwa',
+                'impact-description': 'da aka yi daga ra\'ayoyin marasa lafiya a wannan shekara',
+                'community-description': 'marasa lafiya suna taimakawa inganta kula da lafiya a MSH',
+                'sentiment-title': 'Yanayin Gamsuwar Majinyaci',
+                'this-quarter': 'wannan kwata',
+                
+                // Examples
+                'recent-changes': 'Sababbin Canje-canje da Kuka Haifar',
+                'example1': '"Shawarar ku game da kujerun dakunan jira ya haifar da shigar da sabbin kujeru masu dadi!"',
+                'example1-date': 'An aiwatar: Maris 2024',
+                'example2': '"Ra\'ayin marasa lafiya game da tunatarwar alƙawari ya taimaka mana ƙaddamar da sabon tsarin sanarwar SMS."',
+                'example2-date': 'An aiwatar: Fabrairu 2024',
+                'example3': '"Bayanan ku game da fakin motoci ya haifar da sabon hidimar valet a ranakun cunkoso."',
+                'example3-date': 'An aiwatar: Janairu 2024',
+                
+                // Feedback form
+                'satisfaction-question': 'Yaya jin daɗin kulawar da muke bayarwa?',
+                'very-poor': 'Mafi Muni', 
+                'poor': 'Muni', 
+                'fair': 'Daidai', 
+                'good': 'Mai kyau', 
+                'excellent': 'Nagari',
+                'not-satisfied': 'Ba a gamsu ba',
+                'very-satisfied': 'An gamsu sosai',
+                
+                'recommend-question': 'Za ku ba da shawarar mu?',
+                'never': 'Ba zan taba ba', 
+                'unlikely': 'Da wuya', 
+                'maybe': 'Watakila', 
+                'likely': 'Mai yiwuwa', 
+                'definitely': 'Tabbas',
+                'would-not-recommend': 'Ba zan ba da shawara ba',
+                'highly-recommend': 'Zan ba da shawara sosai',
+                
+                'experience-placeholder': 'Ba mu labarin ziyarar ku - muna son jin daga gare ku! Raba abin da ya sa ku murmushi ko yadda za mu iya ingantawa...',
+                'voice-instruction': 'Danna makirufo don yin magana cikin harshenku',
+                'ai-analyzing': 'AI yana nazarin ra\'ayinku...',
+                'name-placeholder': 'Sunan ku (Na zaɓi)',
+                'contact-placeholder': 'Imel ko Waya (Na zaɓi)',
+                'submit-feedback': 'Aika Ra\'ayi 🚀',
+                
+                // Thank you screen
+                'thank-you-title': 'Ban mamaki! Na gode!',
+                'thank-you-message': 'Ra\'ayin ku yana da matuƙar muhimmanci a gare mu! Muna ci gaba da aiki don inganta ƙwarewar kula da lafiyar ku. Kun yi kyau!',
+                
+                // Registration
+                'join-community': '💫 Ku zama sashen al\'ummar kiwon lafiyarmu!',
+                'register-now': 'Yi Rajista Yanzu ✨',
+                'registration-title': 'Shiga Al\'ummarmu',
+                
+                // Registration form
+                'last-name-label': 'Sunan Iyali',
+                'last-name-placeholder': 'Sunan iyalin ku',
+                'first-name-label': 'Sunan Farko',
+                'first-name-placeholder': 'Sunan farkon ku',
+                'middle-name-label': 'Sunan Tsakiya',
+                'middle-name-placeholder': 'Sunan tsakiya (na zaɓi)',
+                'marital-status-label': 'Matsayin Aure',
+                'marital-status-placeholder': 'Zaɓi matsayin aure',
+                'phone-label': 'Lambar Waya',
+                'phone-placeholder': 'misali +234 801 234 5678',
+                'email-label': 'Adireshin Imel',
+                'email-placeholder': 'email.din@misali.com',
+                'dob-label': 'Ranar Haihuwa',
+                'gender-label': 'Jinsi',
+                'gender-placeholder': 'Zaɓi jinsi',
+                'payor-label': 'Nau\'in Mai Biya',
+                'payor-placeholder': 'Zaɓi nau\'in mai biya',
+                'hmo-id-label': 'Lambar HMO',
+                'hmo-id-placeholder': 'Shigar da lambar HMO',
+                'address-label': 'Adireshin Ku',
+                'address-placeholder': 'Shigar da cikakken adireshin ku...',
+                'comments-label': 'Ƙarin Bayani (Na zaɓi)',
+                'comments-placeholder': 'Duk wani ƙarin bayani ko damuwa...',
+                'payment-details-title': 'Bayanan Biya',
+                'payment-text': 'Da fatan za a biya don kammala rajistar ku.',
+                'personal-payment-text': 'Da fatan za a biya <span class="price-highlight">₦7,500</span> don kammala rajistar shirin ku na sirri.',
+                'family-payment-text': 'Da fatan za a biya <span class="price-highlight">₦15,000</span> don kammala rajistar shirin ku na iyali.',
+                'consent-label': 'Na yarda da sarrafa bayanina na sirri don dalilai na likita kuma na yarda da manufar sirrin asibiti.',
+                'complete-registration': 'Kammala Rajista',
+                
+                // Registration success
+                'welcome-title': 'Barka da zuwa Dangi! 🎉',
+                'welcome-message': 'An kammala rajistar ku! Mun yi farin cikin zama wani ɓangare na tafiyar lafiyar ku.'
+            },
+            yo: {
+                // Hospital info
+                'hospital-name': 'Ile-iwosan Magodo Akosemose',
+                'hospital-tagline': 'O jẹ ẹni pataki!',
+                
+                // Language selector
+                'select-language': 'Yan Ede:',
+                'ready-translate': 'Setan lati tumọ',
+                
+                // Stats
+                'improvements-text': 'imurasilẹ',
+                'impact-description': 'ti a ṣe lati esi alaisan ni odun yii',
+                'community-description': 'alaisan n ṣe iranlowo fun imurasilẹ itoju ilera ni MSH',
+                'sentiment-title': 'Ifarahan Itelorun Alaisan',
+                'this-quarter': 'ni idawo yii',
+                
+                // Examples
+                'recent-changes': 'Awọn Ayipada Tuntun Ti O Fa',
+                'example1': '"Imọran rẹ nipa ijoko yara itẹlọrun fa awọn aga tuntun alẹwa ti a fi sori!',
+                'example1-date': 'A ṣe: Oṣu Kẹta 2024',
+                'example2': '"Esi alaisan nipa isopamọ apere fa jade si eto ifitonileti SMS tuntun wa."',
+                'example2-date': 'A ṣe: Oṣu Keji 2024',
+                'example3': '"Àwọn àṣẹ rẹ nipa ipamọ ọkọ fa si iṣẹ valet tuntun wa ni ọjọ́ ayọ."',
+                'example3-date': 'A ṣe: Oṣu Kinni 2024',
+                
+                // Feedback form
+                'satisfaction-question': 'Bawo ni itẹlọrun rẹ si itọju wa?',
+                'very-poor': 'Buburu Pupọ', 
+                'poor': 'Buburu', 
+                'fair': 'O dara', 
+                'good': 'O dara', 
+                'excellent': 'O tayọ',
+                'not-satisfied': 'Ko itẹlọrun',
+                'very-satisfied': 'Itẹlọrun pupọ',
+                
+                'recommend-question': 'Ṣe o le ṣeduro wa?',
+                'never': 'Rara', 
+                'unlikely': 'O le ṣeeṣe', 
+                'maybe': 'Boya', 
+                'likely': 'O le ṣeeṣe', 
+                'definitely': 'Lọdọọdun',
+                'would-not-recommend': 'Ko ni imọran',
+                'highly-recommend': 'Gbọdọ ṣeduro',
+                
+                'experience-placeholder': 'Sọ fun wa nipa ibẹwọ rẹ - a fẹràn gbọ́ láti ọdọ rẹ! Pin ohun ti o ṣe rẹ mimu tabi bawo ni a le ṣe imurasilẹ...',
+                'voice-instruction': 'Tẹ mikirofonu lati sọrọ ni ede rẹ',
+                'ai-analyzing': 'AI n ṣe iwadi esi rẹ...',
+                'name-placeholder': 'Orukọ Rẹ (Ayanfẹ)',
+                'contact-placeholder': 'Imẹli tabi Foonu (Ayanfẹ)',
+                'submit-feedback': 'Firanṣẹ Esi 🚀',
+                
+                // Thank you screen
+                'thank-you-title': 'Oyelakin! E ṣeun!',
+                'thank-you-message': 'Esi rẹ tumọ si agbaye fun wa! A n ṣiṣẹ ni gbangba lati ṣe imurasilẹ iriri itoju ilera rẹ. O yẹ!',
+                
+                // Registration
+                'join-community': '💫 Jẹ apakan awujo ilera wa!',
+                'register-now': 'Forukọsilẹ Ni bayi ✨',
+                'registration-title': 'Darapọ Mọ Awujo Wa',
+                
+                // Registration form
+                'last-name-label': 'Oruko Idile',
+                'last-name-placeholder': 'Oruko idile rẹ',
+                'first-name-label': 'Oruko Kinni',
+                'first-name-placeholder': 'Oruko kinni rẹ',
+                'middle-name-label': 'Oruko Arin',
+                'middle-name-placeholder': 'Oruko arin rẹ (ayanfẹ)',
+                'marital-status-label': 'Ipo Igbeyawo',
+                'marital-status-placeholder': 'Yan ipo igbeyawo',
+                'phone-label': 'Nọmba Foonu',
+                'phone-placeholder': 'a.p. +234 801 234 5678',
+                'email-label': 'Adirẹsi Imẹli',
+                'email-placeholder': 'imẹli.rẹ@apere.com',
+                'dob-label': 'Ọjọ́ Ìbí',
+                'gender-label': 'Ẹya',
+                'gender-placeholder': 'Yan ẹya',
+                'payor-label': 'Iru OlusANwo',
+                'payor-placeholder': 'Yan iru olusANwo',
+                'hmo-id-label': 'Nọmba HMO',
+                'hmo-id-placeholder': 'Tẹ nọmba HMO rẹ sii',
+                'address-label': 'Adirẹsi Rẹ',
+                'address-placeholder': 'Tẹ adirẹsi rẹ kikun sii...',
+                'comments-label': 'Afikun Asọye (Ayanfẹ)',
+                'comments-placeholder': 'Eyikeyi afikun alaye tabi ainiyanju...',
+                'payment-details-title': 'Alaye Isanwo',
+                'payment-text': 'Jọwọ sanwo lati pari iforukọsilẹ rẹ.',
+                'personal-payment-text': 'Jọwọ san <span class="price-highlight">₦7,500</span> lati pari iforukọsilẹ eto rẹ ti ara ẹni.',
+                'family-payment-text': 'Jọwọ san <span class="price-highlight">₦15,000</span> lati pari iforukọsilẹ eto idile rẹ.',
+                'consent-label': 'Mo fọwọsi iṣẹ ṣiṣe alaye ara ẹni mi fun awọn idi itọju ati pe mo gba laaye ilana ikọkọ ile iwosan.',
+                'complete-registration': 'Parí Ìforukọsilẹ',
+                
+                // Registration success
+                'welcome-title': 'Kaabọ si Idile! 🎉',
+                'welcome-message': 'A ti pari iforukọsilẹ rẹ! A yọ lati jẹ apakan irin ajo ilera rẹ.'
+            },
+            ig: {
+                // Hospital info
+                'hospital-name': 'Ụlọ Ọgwụ Magodo Pụrụ Iche',
+                'hospital-tagline': 'Ị dị ịkpa!',
+                
+                // Language selector
+                'select-language': 'Họrọ Asụsụ:',
+                'ready-translate': 'Dị njikere ịsụgharị',
+                
+                // Stats
+                'improvements-text': 'mmelite',
+                'impact-description': 'emere site na nzaghachi ndị ọrịa n\'afọ a',
+                'community-description': 'ndị ọrịa na-enyere aka melite nlekọta ahụike na MSH',
+                'sentiment-title': 'Omume Afọ Ojuju Ndị Ọrịa',
+                'this-quarter': 'n\'oge a',
+                
+                // Examples
+                'recent-changes': 'Mgbanwe Ọhụrụ Ị Kpatara',
+                'example1': '"Ntụnye gị gbasara oche ụlọ nche mere ka etinye oche ọhụrụ dị mma!"',
+                'example1-date': 'Emebere: Maachị 2024',
+                'example2': '"Nkwupụta ndị ọrịa gbasara ihe ncheta oge ọrụ nyere anyị aka ịmalite usoro nkwupụta SMS ọhụrụ anyị."',
+                'example2-date': 'Emebere: Febrụwarị 2024',
+                'example3': '"Ihe ị kwuru gbasara ebe a na-adọba ụgbọala butere anyị ọrụ valet ọhụrụ anyị n\'ụbọchị ndị na-ekwo ekwo."',
+                'example3-date': 'Emebere: Jenụwarị 2024',
+                
+                // Feedback form
+                'satisfaction-question': 'Kedu otụ afọ ojuju gị si dị maka nlekọta anyị?',
+                'very-poor': 'Ọjọọ Nke Ukwuu', 
+                'poor': 'Ọjọọ', 
+                'fair': 'Ọ dị mma', 
+                'good': 'Ọ dị mma', 
+                'excellent': 'Ọ magburu onwe ya',
+                'not-satisfied': 'Enweghị afọ ojuju',
+                'very-satisfied': 'Nwee afọ ojuju nke ukwuu',
+                
+                'recommend-question': 'Ì ga-akwado anyị?',
+                'never': 'Agaghị', 
+                'unlikely': 'O yighị', 
+                'maybe': 'Eleghị anya', 
+                'likely': 'O yikarịrị', 
+                'definitely': 'N\'ezie',
+                'would-not-recommend': 'Agaghị akwado',
+                'highly-recommend': 'Ga-akwado nke ukwuu',
+                
+                'experience-placeholder': 'Gwa anyị gbasara nleta gị - anyị hụrụ n\'anya ịnụ sitere n\'aka gị! Kekọrịta ihe mere gị ọchị ma ọ bụ otu anyị nwere ike isi meziwanye...',
+                'voice-instruction': 'Pịa igwe okwu iji kwuo okwu n\'asụsụ gị',
+                'ai-analyzing': 'AI na-enyocha mmetụta uche gị...',
+                'name-placeholder': 'Aha Gị (Nhọrọ)',
+                'contact-placeholder': 'Email ma ọ bụ Ekwentị (Nhọrọ)',
+                'submit-feedback': 'Zipu Nzaghachi 🚀',
+                
+                // Thank you screen
+                'thank-you-title': 'Ịtụnanya! Daalụ!',
+                'thank-you-message': 'Nzaghachi gị pụtara ụwa nye anyị! Anyị na-arụsi ọrụ ike mgbe niile iji mee ka ahụmịhe ahụike gị ka mma. Ị mara mma!',
+                
+                // Registration
+                'join-community': '💫 Bụrụ akụkụ nke obodo nlekọta ahụike anyị!',
+                'register-now': 'Debanye aha Ugbu a ✨',
+                'registration-title': 'Sonye na Obodo Anyị',
+                
+                // Registration form
+                'last-name-label': 'Aha Nna',
+                'last-name-placeholder': 'Aha nna gị',
+                'first-name-label': 'Aha Mbụ',
+                'first-name-placeholder': 'Aha mbụ gị',
+                'middle-name-label': 'Aha Etiti',
+                'middle-name-placeholder': 'Aha etiti gị (nhọrọ)',
+                'marital-status-label': 'Ọnọdụ Alụmdi na Nwunye',
+                'marital-status-placeholder': 'Họrọ ọnọdụ alụmdi na nwunye',
+                'phone-label': 'Nọmba Ekwentị',
+                'phone-placeholder': 'dịka +234 801 234 5678',
+                'email-label': 'Adreesị Ozi-E',
+                'email-placeholder': 'email.gi@ọmụmaatụ.com',
+                'dob-label': 'Ụbọchị Ọmụmụ',
+                'gender-label': 'Okike',
+                'gender-placeholder': 'Họrọ okike',
+                'payor-label': 'Ụdị Ịkwụ Ụgwọ',
+                'payor-placeholder': 'Họrọ ụdị ịkwụ ụgwọ',
+                'hmo-id-label': 'Nọmba HMO',
+                'hmo-id-placeholder': 'Tinye nọmba HMO gị',
+                'address-label': 'Adreesị Gị',
+                'address-placeholder': 'Tinye adreesị gị zuru ezu...',
+                'comments-label': 'Okwu Ndị Ọzọ (Nhọrọ)',
+                'comments-placeholder': 'Ihe ọ bụla ọzọ ma ọ bụ nchegbu...',
+                'payment-details-title': 'Nkọwa Ịkwụ Ụgwọ',
+                'payment-text': 'Biko kwụọ ụgwọ iji mechaa ndebanye aha gị.',
+                'personal-payment-text': 'Biko kwụọ <span class="price-highlight">₦7,500</span> iji mechaa ndebanye aha atụmatụ nkeonwe gị.',
+                'family-payment-text': 'Biko kwụọ <span class="price-highlight">₦15,000</span> iji mechaa ndebanye aha atụmatụ ezinụlọ gị.',
+                'consent-label': 'Ekwenyere m na nhazi ozi nkeonwe m maka ebumnuche ahụike ma kweta na amụma nzuzo nke ụlọ ọgwụ.',
+                'complete-registration': 'Mechaa Ndebanye aha',
+                
+                // Registration success
+                'welcome-title': 'Nnọọ n\'Ezinụlọ! 🎉',
+                'welcome-message': 'Emechara ndebanye aha gị! Anyị nwere obi ụtọ ịbụ akụkụ nke njem ahụike gị.'
+            }
+        };
+
+        // AI Analysis Class
+        class AIAnalyzer {
+            analyzeSentiment(text) {
+                if (!text || text.length < 10) return null;
+                
+                const positiveWords = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'professional', 'caring', 'helpful', 'friendly'];
+                const negativeWords = ['bad', 'terrible', 'awful', 'poor', 'rude', 'slow', 'disappointing', 'frustrated'];
+                
+                let score = 3;
+                const lowerText = text.toLowerCase();
+                
+                positiveWords.forEach(word => {
+                    if (lowerText.includes(word)) score += 0.3;
+                });
+                
+                negativeWords.forEach(word => {
+                    if (lowerText.includes(word)) score -= 0.4;
+                });
+                
+                score = Math.max(1, Math.min(5, score));
+                
+                let sentiment = 'neutral';
+                if (score >= 4) sentiment = 'positive';
+                else if (score <= 2.5) sentiment = 'negative';
+                
+                return { score: Math.round(score * 10) / 10, sentiment };
+            }
+        }
+
+        const aiAnalyzer = new AIAnalyzer();
+
+        // Translation Functions
+        function changeLanguage() {
+            const select = document.getElementById('languageSelect');
+            const langCode = select.value;
+            currentLanguage = langCode;
+            const status = document.getElementById('translationStatus');
+            
+            status.textContent = 'Translating...';
+            status.classList.add('show', 'translating');
+            
+            setTimeout(() => {
+                translateContent(langCode);
+                status.textContent = `Content translated to ${getLanguageName(langCode)}`;
+                status.classList.remove('translating');
+                
+                setTimeout(() => {
+                    status.classList.remove('show');
+                }, 2000);
+            }, 500);
+        }
+
+        function translateContent(langCode) {
+            const trans = translations[langCode] || translations.en;
+            
+            // Translate all text elements
+            Object.keys(trans).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = trans[key];
+                }
+            });
+            
+            // Translate placeholders
+            document.getElementById('experienceText').placeholder = trans['experience-placeholder'];
+            document.getElementById('patientName').placeholder = trans['name-placeholder'];
+            document.getElementById('patientContact').placeholder = trans['contact-placeholder'];
+            
+            // Translate registration form placeholders
+            document.getElementById('lastName').placeholder = trans['last-name-placeholder'];
+            document.getElementById('firstName').placeholder = trans['first-name-placeholder'];
+            document.getElementById('middleName').placeholder = trans['middle-name-placeholder'];
+            document.getElementById('maritalStatus').querySelector('option[value=""]').textContent = trans['marital-status-placeholder'];
+            document.getElementById('phone').placeholder = trans['phone-placeholder'];
+            document.getElementById('email').placeholder = trans['email-placeholder'];
+            document.getElementById('gender').querySelector('option[value=""]').textContent = trans['gender-placeholder'];
+            document.getElementById('payor').querySelector('option[value=""]').textContent = trans['payor-placeholder'];
+            document.getElementById('hmoId').placeholder = trans['hmo-id-placeholder'];
+            document.getElementById('address').placeholder = trans['address-placeholder'];
+            document.getElementById('comments').placeholder = trans['comments-placeholder'];
+            
+            // Update payment text based on selected payor
+            const payor = document.getElementById('payor').value;
+            if (payor === 'personal') {
+                document.getElementById('paymentText').innerHTML = trans['personal-payment-text'];
+            } else if (payor === 'family') {
+                document.getElementById('paymentText').innerHTML = trans['family-payment-text'];
+            } else {
+                document.getElementById('paymentText').innerHTML = trans['payment-text'];
+            }
+            
+            // Update AI analysis text
+            document.getElementById('aiAnalysis').textContent = trans['ai-analyzing'];
+            document.getElementById('registrationAiAnalysis').textContent = trans['ai-analyzing'];
+        }
+
+        function getLanguageName(code) {
+            const names = { en: 'English', ha: 'Hausa', yo: 'Yoruba', ig: 'Igbo', fr: 'French', ar: 'Arabic' };
+            return names[code] || 'Unknown';
+        }
+
+        // Rating Functions
+        function selectRating(type, value, element) {
+            const container = element.parentElement;
+            container.querySelectorAll('.rating-option').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            if (type === 'satisfaction') satisfactionRating = value;
+            else if (type === 'recommendation') recommendRating = value;
+            
+            validateForm();
+        }
+
+        function validateForm() {
+            const submitBtn = document.getElementById('submitBtn');
+            const experienceText = document.getElementById('experienceText').value.trim();
+            const hasRatings = satisfactionRating !== null && recommendRating !== null;
+            const hasText = experienceText.length > 0;
+            
+            submitBtn.disabled = !(hasRatings || hasText);
+        }
+
+        // Text Input Functions
+        function handleTextInput() {
+            const text = document.getElementById('experienceText').value.trim();
+            validateForm();
+            
+            if (text.length > 10) {
+                const analysis = aiAnalyzer.analyzeSentiment(text);
+                if (analysis) {
+                    const indicator = document.getElementById('aiAnalysis');
+                    indicator.innerHTML = `🤖 Analysis: ${analysis.sentiment} sentiment (${analysis.score}/5)`;
+                    indicator.classList.add('show');
+                }
+            } else {
+                document.getElementById('aiAnalysis').classList.remove('show');
+            }
+        }
+
+        // Voice Functions
+        let isRecording = false;
+        let recognition = null;
+
+        function toggleVoice() {
+            const voiceButton = document.querySelector('.voice-button');
+            const voiceStatus = document.getElementById('voice-instruction');
+            
+            if (!isRecording) {
+                startVoiceRecognition(voiceButton, voiceStatus);
+            } else {
+                stopVoiceRecognition(voiceButton, voiceStatus);
+            }
+        }
+
+        function startVoiceRecognition(button, status) {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = currentLanguage === 'en' ? 'en-US' : currentLanguage;
+
+            isRecording = true;
+            button.style.background = 'linear-gradient(135deg, #00b894 0%, #00a085 100%)';
+            button.style.animation = 'pulse 1.5s infinite';
+            status.textContent = 'Listening... Speak now!';
+
+            recognition.onstart = function() {
+                console.log('Speech recognition started');
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                const confidence = event.results[0][0].confidence;
+                
+                console.log('Speech result:', transcript, 'Confidence:', confidence);
+                
+                const textarea = document.getElementById('experienceText');
+                if (textarea) {
+                    textarea.value = transcript;
+                    textarea.focus();
+                    handleTextInput();
+                }
+                
+                status.textContent = `Captured: "${transcript.substring(0, 50)}${transcript.length > 50 ? '...' : ''}"`;
+                
+                setTimeout(() => {
+                    status.textContent = translations[currentLanguage]['voice-instruction'];
+                }, 3000);
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                let errorMessage = 'Error capturing speech. ';
+                
+                switch(event.error) {
+                    case 'no-speech':
+                        errorMessage += 'No speech detected. Try again.';
+                        break;
+                    case 'audio-capture':
+                        errorMessage += 'Microphone not available.';
+                        break;
+                    case 'not-allowed':
+                        errorMessage += 'Microphone permission denied.';
+                        break;
+                    case 'network':
+                        errorMessage += 'Network error occurred.';
+                        break;
+                    default:
+                        errorMessage += 'Please try again.';
+                }
+                
+                status.textContent = errorMessage;
+                
+                setTimeout(() => {
+                    status.textContent = translations[currentLanguage]['voice-instruction'];
+                }, 3000);
+            };
+
+            recognition.onend = function() {
+                stopVoiceRecognition(button, status);
+            };
+
+            try {
+                recognition.start();
+            } catch (error) {
+                console.error('Failed to start speech recognition:', error);
+                alert('Failed to start voice recognition. Please ensure your microphone is connected and try again.');
+                stopVoiceRecognition(button, status);
+            }
+        }
+
+        function stopVoiceRecognition(button, status) {
+            isRecording = false;
+            
+            button.style.background = 'linear-gradient(135deg, #fd79a8 0%, #e84393 100%)';
+            button.style.animation = '';
+            
+            if (recognition) {
+                recognition.stop();
+                recognition = null;
+            }
+            
+            if (status.textContent.includes('Listening') || status.textContent.includes('Speak now')) {
+                status.textContent = translations[currentLanguage]['voice-instruction'];
+            }
+        }
+
+        // Add CSS for pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(0, 184, 148, 0.6); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Carousel Functions
+        function showExample(index) {
+            document.querySelectorAll('.example-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            currentExampleIndex = index;
+        }
+
+        // Auto-rotate carousel
+        setInterval(() => {
+            const nextIndex = (currentExampleIndex + 1) % 3;
+            showExample(nextIndex);
+        }, 5000);
+
+        // Registration Functions
+        function showRegistration() {
+            console.log('showRegistration called');
+            const overlay = document.getElementById('registrationOverlay');
+            const card = document.getElementById('registrationCard');
+            
+            overlay.classList.add('show');
+            setTimeout(() => {
+                card.classList.add('show');
+            }, 100);
+        }
+
+        function hideRegistration() {
+            const overlay = document.getElementById('registrationOverlay');
+            const card = document.getElementById('registrationCard');
+            const success = document.getElementById('registrationSuccess');
+            const form = document.getElementById('registrationForm');
+            
+            card.classList.remove('show');
+            setTimeout(() => {
+                overlay.classList.remove('show');
+                success.style.display = 'none';
+                form.style.display = 'block';
+            }, 300);
+        }
+
+        function closeIfClickedOutside(event) {
+            if (event.target.id === 'registrationOverlay') {
+                hideRegistration();
+            }
+        }
+
+        function toggleConsent() {
+            consentGiven = !consentGiven;
+            const checkbox = document.getElementById('consentCheckbox');
+            checkbox.classList.toggle('checked', consentGiven);
+            validateRegistrationForm();
+        }
+
+        function formatPhone() {
+            const input = document.getElementById('phone');
+            let value = input.value.replace(/\D/g, '');
+            
+            if (value.startsWith('234')) {
+                value = '+' + value;
+            } else if (value.startsWith('0')) {
+                value = '+234' + value.substring(1);
+            } else if (value && !value.startsWith('+')) {
+                value = '+234' + value;
+            }
+            
+            input.value = value;
+        }
+
+        function handlePayorChange() {
+            const payor = document.getElementById('payor').value;
+            const hmoId = document.getElementById('hmoId');
+            const paymentInfo = document.getElementById('paymentInfo');
+            const paymentText = document.getElementById('paymentText');
+            
+            const hmoOptions = ['aiico', 'anchor', 'axamansard', 'bastion', 'clearline', 'hygeia', 'leadway', 'nem', 'phillips', 'reliance', 'tht'];
+            
+            if (hmoOptions.includes(payor)) {
+                hmoId.disabled = false;
+                hmoId.required = true;
+                paymentInfo.classList.remove('show');
+            } else {
+                hmoId.disabled = true;
+                hmoId.required = false;
+                hmoId.value = '';
+                
+                if (payor === 'personal') {
+                    paymentText.innerHTML = translations[currentLanguage]['personal-payment-text'];
+                    paymentInfo.classList.add('show');
+                } else if (payor === 'family') {
+                    paymentText.innerHTML = translations[currentLanguage]['family-payment-text'];
+                    paymentInfo.classList.add('show');
+                } else {
+                    paymentInfo.classList.remove('show');
+                }
+            }
+        }
+
+        function validateRegistrationForm() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const maritalStatus = document.getElementById('maritalStatus').value;
+            const phone = document.getElementById('phone').value.trim();
+            const dateOfBirth = document.getElementById('dateOfBirth').value;
+            const gender = document.getElementById('gender').value;
+            const address = document.getElementById('address').value.trim();
+            const payor = document.getElementById('payor').value;
+            const hmoId = document.getElementById('hmoId').value.trim();
+            
+            const hmoOptions = ['aiico', 'anchor', 'axamansard', 'bastion', 'clearline', 'hygeia', 'leadway', 'nem', 'phillips', 'reliance', 'tht'];
+            const hmoIdValid = !hmoOptions.includes(payor) || hmoId;
+            
+            const isValid = firstName && lastName && maritalStatus && phone && dateOfBirth && 
+                           gender && address && payor && consentGiven && hmoIdValid;
+            
+            document.getElementById('registerBtn').disabled = !isValid;
+        }
+
+        function analyzeRegistrationText() {
+            const text = document.getElementById('comments').value.trim();
+            
+            if (text.length > 10) {
+                const analysis = aiAnalyzer.analyzeSentiment(text);
+                if (analysis) {
+                    const indicator = document.getElementById('registrationAiAnalysis');
+                    indicator.innerHTML = `🤖 Analysis: ${analysis.sentiment} sentiment (${analysis.score}/5)`;
+                    indicator.classList.add('show');
+                }
+            } else {
+                document.getElementById('registrationAiAnalysis').classList.remove('show');
+            }
+        }
+
+        function handleRegistration(event) {
+            event.preventDefault();
+            
+            const registerBtn = document.getElementById('registerBtn');
+            registerBtn.innerHTML = 'Processing...';
+            registerBtn.disabled = true;
+            
+            setTimeout(() => {
+                document.getElementById('registrationForm').style.display = 'none';
+                document.getElementById('registrationSuccess').style.display = 'block';
+            }, 1500);
+        }
+
+        // Submit Functions
+        function submitFeedback() {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = '🚀 Sending...';
+            submitBtn.disabled = true;
+            
+            // Simulate submission delay
+            setTimeout(() => {
+                // Update community count
+                const communityNumber = document.getElementById('communityNumber');
+                const currentCount = parseInt(communityNumber.textContent.replace(',', ''));
+                communityNumber.textContent = (currentCount + 1).toLocaleString();
+                
+                // Show thank you screen
+                document.getElementById('feedbackSection').style.display = 'none';
+                document.getElementById('thankYou').style.display = 'block';
+                document.getElementById('registrationLink').style.display = 'none';
+            }, 1500);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
+            
+            // Language selector
+            document.getElementById('languageSelect').addEventListener('change', changeLanguage);
+            
+            // Start carousel rotation
+            showExample(0);
+            
+            // Initial form validation
+            validateForm();
+            validateRegistrationForm();
+            
+            console.log('All systems ready!');
+        });
+
+        // Add click handlers for better mobile support
+        document.addEventListener('click', function(e) {
+            // Handle rating clicks for mobile
+            if (e.target.closest('.rating-option')) {
+                const btn = e.target.closest('.rating-option');
+                const container = btn.parentElement;
+                const value = parseInt(btn.dataset.value);
+                
+                // Clear other selections in this group
+                container.querySelectorAll('.rating-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Select this one
+                btn.classList.add('selected');
+                
+                // Update ratings
+                if (container.id === 'satisfactionRating') {
+                    satisfactionRating = value;
+                } else if (container.id === 'recommendRating') {
+                    recommendRating = value;
+                }
+                
+                validateForm();
+            }
+        });
+    </script>
+</body>
+  </html>
